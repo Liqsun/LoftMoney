@@ -1,58 +1,65 @@
 package com.alexarefev.loftmoney;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import android.os.Bundle;
-import android.widget.Toast;
-
-import com.alexarefev.loftmoney.cells.MoneyCellAdapter;
-import com.alexarefev.loftmoney.cells.MoneyCellAdapterClick;
-import com.alexarefev.loftmoney.cells.MoneyItem;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView itemsView;
-    private MoneyCellAdapter moneyCellAdapter = new MoneyCellAdapter();
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TabLayout tabLayout = findViewById(R.id.tabs);
 
-        configureRecyclerView();
-        generateMoney();
-    }
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        viewPager.setAdapter(new BudgetPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
 
-    private void configureRecyclerView() {
-        itemsView = findViewById(R.id.itemsView);
-        itemsView.setAdapter(moneyCellAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setText(R.string.expences);
+        tabLayout.getTabAt(1).setText(R.string.income);
 
-        moneyCellAdapter.moneyCellAdapterClick = new MoneyCellAdapterClick() {
-            @Override
-            public void onCellClick(MoneyItem moneyItem) {
-                Toast.makeText(getApplicationContext(), "Click-click!", Toast.LENGTH_LONG).show();
-            }
-        };
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),
-                LinearLayoutManager.VERTICAL, false);
 
-        itemsView.setLayoutManager(layoutManager);
-    }
-
-    private void generateMoney() {
-        List<MoneyItem> moneyItems = new ArrayList<>();
-        moneyItems.add(new MoneyItem("Xbox", "45 000"));
-        moneyItems.add(new MoneyItem("Salary", "139 000"));
-
-        moneyCellAdapter.setData(moneyItems);
-    }
 
     }
+
+
+    static class BudgetPagerAdapter extends FragmentPagerAdapter {
+
+        public BudgetPagerAdapter(@NonNull final FragmentManager fm, final int behavior) {
+            super(fm, behavior);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            if (position < 2) {
+
+                return new BudgetFragment();}
+            else
+                return  null;
+        }
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    }
+
+}
